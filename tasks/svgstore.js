@@ -125,10 +125,9 @@ module.exports = function (grunt) {
 
         // Skip duplicated svg files
         if (options.removeDuplicateSVGs) {
-          duplicateID = allSvgIds.includes(id) ? true : false;
+          duplicateID = allSvgIds.includes(id);
           allSvgIds.push(id);
-  
-          if (duplicateID){
+          if (duplicateID) {
             grunt.log.writeln('duplicate filename ' + id + ' was skipped');
             return false;
           }
