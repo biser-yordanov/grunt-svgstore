@@ -71,6 +71,7 @@ module.exports = function (grunt) {
       removeEmptyGroupElements: true,
       removeWithId: null,
       setUniqueIds: true,
+      removeDuplicateSVGs: true,
       svg: {
         'xmlns': 'http://www.w3.org/2000/svg'
       },
@@ -86,6 +87,10 @@ module.exports = function (grunt) {
     }
 
     this.files.forEach(function (file) {
+      if (options.removeDuplicateSVGs) {
+        var allSvgIds = [];
+        var duplicateID = false;
+      }
       var $resultDocument = cheerio.load('<svg><defs></defs></svg>', { xmlMode: true });
 
       var $resultSvg = $resultDocument('svg');
@@ -117,6 +122,16 @@ module.exports = function (grunt) {
           normalizeWhitespace: true,
           xmlMode: true
         });
+
+        // Skip duplicated svg files
+        if (options.removeDuplicateSVGs) {
+          duplicateID = allSvgIds.includes(id);
+          allSvgIds.push(id);
+          if (duplicateID) {
+            grunt.log.writeln('duplicate filename ' + id + ' was skipped');
+            return false;
+          }
+        }
 
         // Remove empty g elements
         if (options.removeEmptyGroupElements) {
